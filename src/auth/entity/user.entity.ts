@@ -18,7 +18,7 @@ export class UserEntity {
     enum: UserType,
     default: UserType.CANNOT_BUY,
   })
-  type: UserType;
+  canPurchase: UserType;
 
   @OneToMany(() => ArtworkEntity, (artwork) => artwork.owner)
   artworks: ArtworkEntity[];

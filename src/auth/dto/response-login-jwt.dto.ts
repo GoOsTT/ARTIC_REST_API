@@ -1,7 +1,13 @@
 // import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { UserEntity } from '../entity/user.entity';
+import { UserType } from '../enums/UserType.enum';
+
+interface UserWithoutPassword {
+  id: number;
+  email: string;
+  canPurchase: UserType;
+}
 
 export class ResponseLoginJwtDto {
   //   @ApiProperty({
@@ -16,5 +22,5 @@ export class ResponseLoginJwtDto {
   //     description: 'Object containing information about the user.',
   //   })
   @IsNotEmpty()
-  user: UserEntity;
+  user: UserWithoutPassword;
 }

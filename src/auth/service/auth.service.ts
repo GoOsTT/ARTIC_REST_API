@@ -28,10 +28,11 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, username: user.email };
+    const { password: _, ...userWithoutPassword } = user;
 
     return {
       jwt: await this.jwtService.signAsync(payload),
-      user: user,
+      user: userWithoutPassword,
     };
   }
 }
