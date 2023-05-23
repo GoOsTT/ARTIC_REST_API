@@ -1,0 +1,11 @@
+# Use the official MySQL image as the base image
+FROM mysql:8
+
+# Set the environment variables for the MySQL database
+ENV MYSQL_DATABASE=icfdb
+ENV MYSQL_USER=myuser
+ENV MYSQL_PASSWORD=password
+ENV MYSQL_ROOT_PASSWORD=password
+
+# Expose the default MySQL port
+EXPOSE 3306
