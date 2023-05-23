@@ -21,7 +21,7 @@ import { ArtworkEntity } from './auth/entity/artwork.entity';
     }),
     AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService],
 })
 export class AppModule {}
