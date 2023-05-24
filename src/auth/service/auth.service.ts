@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../entity/user.entity';
+import { User } from '../entity/user.entity';
 import { Repository } from 'typeorm';
 import { PostLoginDto } from '../dto/post-login.dto';
 import { ResponseLoginJwtDto } from '../dto/response-login-jwt.dto';
@@ -9,9 +9,9 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
-    private jwtService: JwtService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async signIn(getLoginJwtDto: PostLoginDto): Promise<ResponseLoginJwtDto> {

@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { UserEntity } from './user.entity';
+import { User } from './user.entity';
 
 @Entity()
-export class ArtworkEntity {
+export class ArtworkOwnerShip {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,6 +12,6 @@ export class ArtworkEntity {
   @Column()
   description: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.artworks)
-  owner: UserEntity;
+  @ManyToOne(() => User, (user) => user.artworks)
+  owner: User;
 }

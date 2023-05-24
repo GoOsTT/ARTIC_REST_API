@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './auth/entity/user.entity';
+import { User } from './auth/entity/user.entity';
 import { AuthModule } from './auth/auth.module';
-import { ArtworkEntity } from './auth/entity/artwork.entity';
+import { ArtworkOwnerShip } from './auth/entity/artwork.entity';
+import { ArtworkModule } from './artwork/artwork.module';
 
 @Module({
   imports: [
@@ -14,13 +14,14 @@ import { ArtworkEntity } from './auth/entity/artwork.entity';
       username: 'myuser',
       password: 'password',
       database: 'icfdb',
-      entities: [UserEntity, ArtworkEntity],
+      entities: [User, ArtworkOwnerShip],
       synchronize: true,
       autoLoadEntities: true,
     }),
     AuthModule,
+    ArtworkModule,
   ],
   controllers: [],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
