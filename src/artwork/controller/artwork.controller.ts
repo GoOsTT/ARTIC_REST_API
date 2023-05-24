@@ -15,7 +15,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from 'src/guard/auth-guard';
+import { AuthGuard } from '../../guard/auth-guard';
 import { GetListArtworkDto } from '../dto/get-list-artwork.dto';
 
 @ApiTags('Artwork')
