@@ -1,13 +1,35 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Scope,
+  Inject,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { ArtWorkIdParamDto } from '../dto/get-single-artwork-param.dto';
 import { HttpService } from '@nestjs/axios';
 import { ResponseSingleArtWorkDto } from '../dto/response-single-artwork.dto';
 import { catchError, firstValueFrom } from 'rxjs';
 import { GetListArtworkDto } from '../dto/get-list-artwork.dto';
+import { PostBuyArtworkDto } from '../dto/post-buy-artwork.dto';
+import { ResponseArtworkPurchaseDto } from '../dto/response-buy-artwork.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../../auth/entity/user.entity';
+import { ArtworkEntity } from '../../auth/entity/artwork.entity';
+import { GetUserArtWorkDto } from '../dto/get-user-artwork.dto';
+import { Request } from 'express';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class ArtworkService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    @InjectRepository(ArtworkEntity)
+    private readonly artworkRepository: Repository<ArtworkEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @Inject(REQUEST) private readonly request: Request,
+    private readonly httpService: HttpService,
+  ) {}
   async getSingleArtwork(
     artWorkIdParamDto: ArtWorkIdParamDto,
   ): Promise<ResponseSingleArtWorkDto> {
@@ -39,7 +61,7 @@ export class ArtworkService {
     try {
       const artworks = await this.fetchPaginatedArtworkList(page, limit);
 
-      const reducedArtworks = this.reducedPayload(artworks.data);
+      const reducedArtworks = this.createArtworkResponse(artworks.data);
 
       return reducedArtworks;
     } catch (error) {
@@ -51,7 +73,70 @@ export class ArtworkService {
     }
   }
 
-  //these functions would normally be repository methods/functions if I'd fetch the artworks froum our database
+  async purchaseArtWork(postBuyArtwork: PostBuyArtworkDto): Promise<any> {
+    const { id } = postBuyArtwork;
+    const { user } = this.request as any;
+
+    //check if the user is able to purhcase any artwork
+    //for now this check is implemented here, but would most likely put into a middleware of a guard for reusability
+    const currentUser = await this.userRepository.findOne({
+      where: {
+        email: user.username,
+      },
+    });
+
+    if (currentUser.canPurchase === 0) {
+      throw new UnauthorizedException('User has no permission to buy artwork.');
+    }
+
+    //check if the artwork specified with id already exists in the db, if it is return "The artwork has already been purhcased"
+    // const found = this.artworkRepository.findOne({
+    //   where: {
+    //     id: id,
+    //   },
+    // });
+
+    // if (found) {
+    //   return 'Artwork has already been purchased.';
+    // }
+    // //fetch the artwork by id with this.getSingleArtwork
+    // const artwork = await this.fetchSingleArtwork(id);
+    // //save the artwork to the user into the db
+    // const saved = this.artworkRepository.save({
+    //   id: artwork.id,
+    //   name: artwork.title,
+    //   owner: user,
+    //   description: artwork.thumbnail,
+    // });
+    // //return the singnle artwork's meta data
+    // if (saved) {
+    //   return artwork;
+    // }
+  }
+
+  async listArtworkOfUser(
+    getUserArtWork: GetUserArtWorkDto,
+  ): Promise<ArtworkEntity[] | []> {
+    const { id } = getUserArtWork;
+
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+      relations: ['artworks'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('No user was found with this id.');
+    }
+
+    //if a user exists, and the user does not own any artwork the response will be an empty array, this return
+    // could be also a string with a different status message, this is really up to the frontend implementations and
+    //I feel like would be better discussed but for now it returns an empty array
+    // this would not make the frontend code obsolete when lets say they want to iterate through the response
+    // we could set up tRPC too to have cnsistent types between front and backend
+    return user.artworks;
+  }
+
+  //these functions would normally be repository methods/functions if I'd fetch the artworks from our database
   private async fetchSingleArtwork(id: number) {
     const { data } = await firstValueFrom(
       this.httpService.get(`https://api.artic.edu/api/v1/artworks/${id}`).pipe(
@@ -91,7 +176,7 @@ export class ArtworkService {
     }
   }
 
-  private reducedPayload = (artworks): ResponseSingleArtWorkDto[] => {
+  private createArtworkResponse = (artworks): ResponseSingleArtWorkDto[] => {
     return artworks.map((artwork): ResponseSingleArtWorkDto => {
       const { id, author, title, thumbnail } = artwork;
       return {

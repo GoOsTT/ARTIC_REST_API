@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { ArtworkOwnerShip } from './artwork.entity';
+import { ArtworkEntity } from './artwork.entity';
 import { UserType } from '../enums/UserType.enum';
 
-@Entity()
-export class User {
+@Entity('user')
+export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,6 +20,6 @@ export class User {
   })
   canPurchase: UserType;
 
-  @OneToMany(() => ArtworkOwnerShip, (artwork) => artwork.owner)
-  artworks: ArtworkOwnerShip[];
+  @OneToMany(() => ArtworkEntity, (artwork) => artwork.owner)
+  artworks: ArtworkEntity[];
 }

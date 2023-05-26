@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entity/user.entity';
+import { UserEntity } from '../entity/user.entity';
 import { Repository } from 'typeorm';
 import { PostLoginDto } from '../dto/post-login.dto';
 import { ResponseLoginJwtDto } from '../dto/response-login-jwt.dto';
@@ -9,8 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -28,6 +28,7 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, username: user.email };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = user;
 
     return {
