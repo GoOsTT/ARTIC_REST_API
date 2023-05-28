@@ -24,7 +24,7 @@ import { GetListArtworkDto } from '../dto/get-list-artwork.dto';
 import { PostBuyArtworkDto } from '../dto/post-buy-artwork.dto';
 import { ResponseArtworkPurchaseDto } from '../dto/response-buy-artwork.dto';
 import { GetUserArtWorkDto } from '../dto/get-user-artwork.dto';
-import { ArtworkEntity } from 'src/auth/entity/artwork.entity';
+import { ArtworkEntity } from '../../auth/entity/artwork.entity';
 
 @ApiTags('Artwork')
 @ApiBearerAuth()

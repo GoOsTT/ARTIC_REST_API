@@ -13,7 +13,7 @@ import { HttpModule } from '@nestjs/axios';
     TypeOrmModule.forFeature([UserEntity, ArtworkEntity]),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'host.docker.internal',
       port: 3306,
       username: 'myuser',
       password: 'password',

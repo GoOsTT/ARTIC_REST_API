@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UserEntity } from '../../../src/auth/entity/user.entity';
+import { UserEntity } from '../../auth/entity/user.entity';
 
 export class ResponseArtworkPurchaseDto {
   @ApiProperty({

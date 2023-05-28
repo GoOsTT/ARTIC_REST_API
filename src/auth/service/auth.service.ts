@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { PostLoginDto } from '../dto/post-login.dto';
 import { ResponseLoginJwtDto } from '../dto/response-login-jwt.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserType } from '../enums/UserType.enum';
 
 @Injectable()
 export class AuthService {
@@ -35,5 +36,21 @@ export class AuthService {
       jwt: await this.jwtService.signAsync(payload),
       user: userWithoutPassword,
     };
+  }
+
+  async seed() {
+    // Create two user instances
+    const user1 = new UserEntity();
+    user1.email = 'user1@email.com';
+    user1.password = 'password';
+    user1.canPurchase = UserType.CANNOT_BUY;
+
+    const user2 = new UserEntity();
+    user2.email = 'user2@email.com';
+    user2.password = 'password';
+    user2.canPurchase = UserType.CAN_BUY;
+
+    // Save the user instances to the database
+    await this.userRepository.save([user1, user2]);
   }
 }

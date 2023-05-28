@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   NotFoundException,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { PostLoginDto } from '../dto/post-login.dto';
@@ -35,5 +36,14 @@ export class AuthController {
     @Body() getLoginJwtDto: PostLoginDto,
   ): Promise<ResponseLoginJwtDto> {
     return await this.authService.signIn(getLoginJwtDto);
+  }
+
+  @ApiOperation({
+    summary:
+      'It"s pretty painful to set up a seeding in nestjs, so BEHOLD the mighty seed endpoint ',
+  })
+  @Get('/seed')
+  async seed() {
+    return await this.authService.seed();
   }
 }

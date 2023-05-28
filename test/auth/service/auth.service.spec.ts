@@ -1,6 +1,5 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
 import { AuthService } from '../../../src/auth/service/auth.service';
 import { PostLoginDto } from '../../../src/auth/dto/post-login.dto';
 import { UserEntity } from '../../../src/auth/entity/user.entity';
