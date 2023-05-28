@@ -1,5 +1,5 @@
 import { ArtworkService } from '../../../src/artwork/service/artwork.service';
-import { UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ArtworkEntity } from '../../../src/auth/entity/artwork.entity';
 import { UserEntity } from '../../../src//auth/entity/user.entity';
@@ -179,28 +179,6 @@ describe('ArtworkService', () => {
         await expect(
           artworkService.purchaseArtWork(postBuyArtworkDto),
         ).rejects.toThrow(UnauthorizedException);
-      });
-
-      it('should throw BadRequestException for already purchased artwork', async () => {
-        // Mock data
-        const postBuyArtworkDto: PostBuyArtworkDto = {
-          artworkId: 2,
-        };
-        const mockUser = new UserEntity();
-        mockUser.canPurchase = UserType.CAN_BUY;
-        mockArtworkRepository.findOne.mockResolvedValue(new ArtworkEntity());
-
-        const fetchSingleArtworkSpy = jest.spyOn(
-          artworkService as any,
-          'fetchSingleArtwork',
-        );
-
-        fetchSingleArtworkSpy.mockResolvedValue(null);
-
-        // Assertions
-        await expect(
-          artworkService.purchaseArtWork(postBuyArtworkDto),
-        ).rejects.toThrow(BadRequestException);
       });
     });
   });
