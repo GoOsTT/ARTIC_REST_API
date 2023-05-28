@@ -1,6 +1,8 @@
 ## Service setup
 
+    ```
     use docker compose up --build to have both the db and the service spin up in docker
+    ```
 
     The service will run on http://localhost:3000 and the db's connection details can be found in the \icf\src\app.module.ts folder, the port is the standard 3306 port.
 
@@ -20,13 +22,11 @@
 
 ## Swagger usage:
 
+    Please call the /seed endpoint once before any other operation.
+    I have decided to use this hacky way because setting up a seeding service or using a seeding package was in my opinion too much of an overkill to insert two entries to the user's table, so please excuse my ways and hit the endpoint, thanks.
+
 After spinning up the service navigate to: http://localhost:3000/api
 You can find the available endpoints there, also their high level restrictions and structure.
-
-#######################################################################################################################################################################################################################################################
-Please call the /seed endpoint once before any other operation.
-I have decided to use this hacky way because setting up a seeding service or using a seeding package was in my opinion too much of an overkill to insert two entries to the user's table, so please excuse my ways and hit the endpoint, thanks :D
-#######################################################################################################################################################################################################################################################
 
 Use the /login endpoint to log into one of the dummy users accounts.
 You'll get a working jwt that should be kept alive for 30 minutes.
