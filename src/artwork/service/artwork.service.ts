@@ -4,6 +4,7 @@ import {
   Scope,
   Inject,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { ArtWorkIdParamDto } from '../dto/get-single-artwork-param.dto';
@@ -19,6 +20,7 @@ import { UserEntity } from '../../auth/entity/user.entity';
 import { ArtworkEntity } from '../../auth/entity/artwork.entity';
 import { GetUserArtWorkDto } from '../dto/get-user-artwork.dto';
 import { Request } from 'express';
+import { UserType } from '../../auth/enums/UserType.enum';
 
 @Injectable({ scope: Scope.REQUEST })
 export class ArtworkService {
@@ -33,10 +35,10 @@ export class ArtworkService {
   async getSingleArtwork(
     artWorkIdParamDto: ArtWorkIdParamDto,
   ): Promise<ResponseSingleArtWorkDto> {
-    const { id } = artWorkIdParamDto;
+    const { artworkId } = artWorkIdParamDto;
 
     try {
-      const response = await this.fetchSingleArtwork(Number(id));
+      const response = await this.fetchSingleArtwork(Number(artworkId));
 
       return {
         id: response.data.id || 'Unknown',
@@ -73,8 +75,10 @@ export class ArtworkService {
     }
   }
 
-  async purchaseArtWork(postBuyArtwork: PostBuyArtworkDto): Promise<any> {
-    const { id } = postBuyArtwork;
+  async purchaseArtWork(
+    postBuyArtwork: PostBuyArtworkDto,
+  ): Promise<ResponseArtworkPurchaseDto | string> {
+    const { artworkId } = postBuyArtwork;
     const { user } = this.request as any;
 
     //check if the user is able to purhcase any artwork
@@ -85,33 +89,47 @@ export class ArtworkService {
       },
     });
 
-    if (currentUser.canPurchase === 0) {
+    if (currentUser.canPurchase === UserType.CANNOT_BUY) {
       throw new UnauthorizedException('User has no permission to buy artwork.');
     }
 
     //check if the artwork specified with id already exists in the db, if it is return "The artwork has already been purhcased"
-    // const found = this.artworkRepository.findOne({
-    //   where: {
-    //     id: id,
-    //   },
-    // });
+    const found = await this.artworkRepository.findOne({
+      where: {
+        museumId: artworkId,
+      },
+    });
 
-    // if (found) {
-    //   return 'Artwork has already been purchased.';
-    // }
-    // //fetch the artwork by id with this.getSingleArtwork
-    // const artwork = await this.fetchSingleArtwork(id);
-    // //save the artwork to the user into the db
-    // const saved = this.artworkRepository.save({
-    //   id: artwork.id,
-    //   name: artwork.title,
-    //   owner: user,
-    //   description: artwork.thumbnail,
-    // });
-    // //return the singnle artwork's meta data
-    // if (saved) {
-    //   return artwork;
-    // }
+    if (found) {
+      throw new BadRequestException('Artwork has already been purchased.');
+    }
+
+    try {
+      //fetch the artwork by id with this.getSingleArtwork
+      const artwork = await this.fetchSingleArtwork(artworkId);
+
+      //map the fetched data into an ArtworkEntity
+      const purchasedArtwork = new ArtworkEntity();
+      purchasedArtwork.museumId = artwork.data.id;
+      purchasedArtwork.description =
+        artwork.data.thumbnail.alt_text || 'Unkwnown';
+      purchasedArtwork.name = artwork.data.title || 'Unknown';
+      purchasedArtwork.owner = currentUser;
+
+      //save the artwork to the user into the db
+      const saved = await this.artworkRepository.save(purchasedArtwork);
+
+      //return the single artwork's meta data
+      if (saved) {
+        return saved;
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('The resource could not be found');
+      } else {
+        console.log('An error occurred:', error);
+      }
+    }
   }
 
   async listArtworkOfUser(

@@ -31,7 +31,9 @@ export class AuthController {
   })
   @HttpCode(HttpStatus.OK)
   @Post('/login')
-  signIn(@Body() getLoginJwtDto: PostLoginDto): Promise<ResponseLoginJwtDto> {
-    return this.authService.signIn(getLoginJwtDto);
+  async signIn(
+    @Body() getLoginJwtDto: PostLoginDto,
+  ): Promise<ResponseLoginJwtDto> {
+    return await this.authService.signIn(getLoginJwtDto);
   }
 }

@@ -7,6 +7,9 @@ export class ArtworkEntity {
   id: number;
 
   @Column()
+  museumId: number;
+
+  @Column()
   name: string;
 
   @Column()

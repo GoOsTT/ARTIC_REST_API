@@ -9,5 +9,5 @@ export class ArtWorkIdParamDto {
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()
-  id: number;
+  artworkId: number;
 }

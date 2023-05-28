@@ -8,6 +8,7 @@ import {
   Post,
   UnauthorizedException,
   Body,
+  BadRequestException,
 } from '@nestjs/common';
 import { ArtworkService } from '../service/artwork.service';
 import { ArtWorkIdParamDto } from '../dto/get-single-artwork-param.dto';
@@ -46,7 +47,7 @@ export class ArtworkController {
     type: NotFoundException,
   })
   @UseGuards(AuthGuard)
-  @Get(':id')
+  @Get(':artworkId')
   async getSingleArtwork(
     @Param() artWorkIdParamDto: ArtWorkIdParamDto,
   ): Promise<ResponseSingleArtWorkDto> {
@@ -76,8 +77,9 @@ export class ArtworkController {
   async listArtworkOfUser(
     @Param() getUserArtWork: GetUserArtWorkDto,
   ): Promise<ArtworkEntity[] | []> {
-    const artWorkOwnedByUser =
-      this.artWorkService.listArtworkOfUser(getUserArtWork);
+    const artWorkOwnedByUser = await this.artWorkService.listArtworkOfUser(
+      getUserArtWork,
+    );
 
     return artWorkOwnedByUser;
   }
@@ -110,12 +112,12 @@ export class ArtworkController {
   }
 
   @ApiOperation({
-    summary: 'Purchase an artwork for a user.',
+    summary: 'Purchase an artwork for the acvite user.',
   })
   @ApiResponse({
     status: 200,
     description: 'Response will contain meta data of the artwork purchased',
-    type: ResponseSingleArtWorkDto,
+    type: ResponseArtworkPurchaseDto,
   })
   @ApiResponse({
     status: 401,
@@ -126,6 +128,11 @@ export class ArtworkController {
     status: 404,
     description: 'No artwork was found by the specified id.',
     type: NotFoundException,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Artwork has already been purchased.',
+    type: BadRequestException,
   })
   @UseGuards(AuthGuard)
   @Post('/purchase')
