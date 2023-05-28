@@ -3,7 +3,8 @@
 
     use docker compose up --build to have both the db and the service spin up in docker
 
-    The service will run on http://localhost:3000 and the db's connection details can be found in the \icf\src\app.module.ts folder, the port is the standard 3306 port.
+    The service will run on http://localhost:3000 and the db's connection details can be 
+    found in the \icf\src\app.module.ts folder, the port is the standard 3306 port.
 
 ## Endpoints
 
