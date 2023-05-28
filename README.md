@@ -1,7 +1,8 @@
 ## Service setup
 
-use docker compose up to have both the db and the service spin up in docker
-The service will run on http://localhost:3000 and the db's connection details can be found in the \icf\src\app.module.ts folder, the port is the standard 3306 port.
+    use docker compose up --build to have both the db and the service spin up in docker
+
+    The service will run on http://localhost:3000 and the db's connection details can be found in the \icf\src\app.module.ts folder, the port is the standard 3306 port.
 
 ## Endpoints
 
@@ -24,7 +25,7 @@ You can find the available endpoints there, also their high level restrictions a
 
 #######################################################################################################################################################################################################################################################
 Please call the /seed endpoint once before any other operation.
-I have decided to use this hacky way because setting up a seeding service or using a seeding package was in my opinion too much of a hussle to insert two entries to the user's table, so please excuse my ways and hit the endpoint, thanks :D
+I have decided to use this hacky way because setting up a seeding service or using a seeding package was in my opinion too much of an overkill to insert two entries to the user's table, so please excuse my ways and hit the endpoint, thanks :D
 #######################################################################################################################################################################################################################################################
 
 Use the /login endpoint to log into one of the dummy users accounts.
@@ -41,7 +42,7 @@ This should set you up to use the restricted endpoints with Bearer token.
 - turn off auto entity sync setup
 - add a new table to store the artwork
   - add another connection table /user_has_artwork/ that stores the user_id s and the artwork_ids
-- add throtling and login attempt checks
+- add throttling and login attempt checks
 - set up a logger service that would log into any 3rd party service
 - add health and status endpoint
 - set up QA and STG environments with their own db
