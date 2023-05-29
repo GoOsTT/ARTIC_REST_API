@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ImATeapotException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entity/user.entity';
 import { Repository } from 'typeorm';
@@ -51,6 +55,12 @@ export class AuthService {
     user2.canPurchase = UserType.CAN_BUY;
 
     // Save the user instances to the database
-    await this.userRepository.save([user1, user2]);
+    try {
+      await this.userRepository.save([user1, user2]);
+    } catch (error) {
+      throw new ImATeapotException(
+        "I bet you haven't seen me anywhere, have you?",
+      );
+    }
   }
 }

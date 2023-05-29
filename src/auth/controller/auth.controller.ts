@@ -18,7 +18,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({
-    summary: 'Fetching a list of artworks defined by page and amount per page.',
+    summary: 'Log in with your user credentials.',
   })
   @ApiResponse({
     status: 200,

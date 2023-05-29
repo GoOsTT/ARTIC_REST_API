@@ -59,7 +59,7 @@ export class ArtworkController {
   }
 
   @ApiOperation({
-    summary: '',
+    summary: 'Get a list of the artifacts owned by the specified user.',
   })
   @ApiResponse({
     status: 200,

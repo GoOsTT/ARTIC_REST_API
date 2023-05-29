@@ -1,9 +1,8 @@
 ## Service setup
 
-
     use docker compose up --build to have both the db and the service spin up in docker
 
-    The service will run on http://localhost:3000 and the db's connection details can be 
+    The service will run on http://localhost:3000 and the db's connection details can be
     found in the \icf\src\app.module.ts folder, the port is the standard 3306 port.
 
 ## Endpoints
@@ -23,8 +22,8 @@
 ## Swagger usage:
 
     Please call the /seed endpoint once before any other operation.
-    I have decided to use this hacky way because setting up a seeding service or using a 
-    seeding package was in my opinion too much of an overkill to insert two entries to the user's table, 
+    I have decided to use this hacky way because setting up a seeding service or using a
+    seeding package was in my opinion too much of an overkill to insert two entries to the user's table,
     so please excuse my ways and hit the endpoint, thanks.
 
 After spinning up the service navigate to: http://localhost:3000/api
@@ -51,3 +50,4 @@ This should set you up to use the restricted endpoints with Bearer token.
 - implement proper proper interceptors and middleware
 - hash the password
 - use transactions and 3-4 states for the purchase endpoint
+- add cascading and unique constraints to the tables
